@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #FfB7C5;
+    }
+    .container {
+      text-align: center;
+    }
+    input {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 8px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #output {
+      margin-top: 20px;
+      margin-left: 10px;
+      margin-right: 10px;
+      padding: 50px;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Random Scenario Generator</h2>
+    <input type="text" id="name1" placeholder="Enter Name 1">
+    <input type="text" id="name2" placeholder="Enter Name 2">
+    <button onclick="generateScenario()">Generate Scenario</button>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    async function generateScenario() {
+      const name1 = document.getElementById('name1').value;
+      const name2 = document.getElementById('name2').value;
+      
+      try {
+        const response = await fetch('scenarios.json');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
+        if (!data || !data.scenarios || !Array.isArray(data.scenarios) || data.scenarios.length === 0) {
+          throw new Error('Invalid scenarios data');
+        }
+
+        const scenarios = data.scenarios;
+        const randomIndex = Math.floor(Math.random() * scenarios.length);
+        const randomScenario = scenarios[randomIndex].replace("{{name1}}", `<strong>${name1}</strong>`).replace("{{name2}}", `<strong>${name2}</strong>`);
+
+        document.getElementById('output').innerHTML = randomScenario;
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    }
+  </script>
+</body>
+</html>
